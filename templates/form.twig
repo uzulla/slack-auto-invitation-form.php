@@ -1,0 +1,25 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Invitation request form</title>
+</head>
+<body>
+
+<h1>Invitation request form for the "{{ team_name }}" slack team.</h1>
+
+<img src="{{ logo_url }}">
+
+<div style="color:red;">{{ last_error }}</div>
+
+<form action="{{ path_for('submit') }}" method="post">
+    <input type="hidden" name="csrf_name" value="{{ csrf_name }}">
+    <input type="hidden" name="csrf_value" value="{{ csrf_value }}">
+    email:<input type="text" name="email" value="{{ email }}"><span style="color:red;">{{ error_list.email }}</span><br>
+    first name:<input type="text" name="first_name" value="{{ first_name }}"><span style="color:red;">{{ error_list.first_name }}</span><br>
+    last name:<input type="text" name="last_name" value="{{ last_name }}"><span style="color:red;">{{ error_list.last_name }}</span><br>
+    <button type="submit">submit</button>
+</form>
+
+</body>
+</html>
