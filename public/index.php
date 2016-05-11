@@ -88,7 +88,7 @@ $app->run();
 
 function get_team_info()
 {
-    $api_response = call_api('/api/team.info', []);
+    $api_response = call_api('/api/team.info');
 
     if ($api_response->ok !== true) {
         error_log(print_r($api_response, 1));
