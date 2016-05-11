@@ -1,4 +1,11 @@
 <?php
+// more strict error handling.
+error_reporting(-1);
+set_error_handler(function ($errno, $errstr, $errfile, $errline) {
+    // error will convert exception. include notice errors.
+    throw new ErrorException($errstr, $errno, 0, $errfile, $errline);
+});
+
 require __DIR__ . "/../vendor/autoload.php";
 require __DIR__ . "/../config.php";
 
@@ -18,7 +25,16 @@ $container['view'] = function (\Slim\Container $container) {
 };
 
 $container['errorHandler'] = function ($container) {
-    return function ($request, $response, $exception) use ($container) {
+    return function ($request, $response, \Exception $exception) use ($container) {
+        error_log(
+            sprintf(
+                "exception: %s at %s:%s\n%s",
+                $exception->getMessage(),
+                $exception->getFile(),
+                $exception->getLine(),
+                $exception->getTraceAsString()
+            )
+        );
         return $container->view->render($response, 'error.twig', [
             'error_message' => $exception->getMessage()
         ]);
