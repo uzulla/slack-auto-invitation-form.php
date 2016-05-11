@@ -83,9 +83,7 @@ $app->post('/submit', function (\Psr\Http\Message\ServerRequestInterface $reques
 })->setName('submit');
 
 $app->get('/finish', function (\Psr\Http\Message\ServerRequestInterface $request, $response, $args) {
-    $this->view->render($response, 'finish.twig', [
-        'slack_url' => sprintf("https://%s.slack.com/", TEAM_SUB_DOMAIN)
-    ]);
+    $this->view->render($response, 'finish.twig');
 })->setName('finish');
 
 $app->run();
