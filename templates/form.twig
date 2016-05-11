@@ -20,20 +20,22 @@
         <h2 class="form-signin-heading">Please fill in</h2>
 
         <div class="form-group">
-        <label>Email address (require)</label>
-        <input type="email" class="form-control" placeholder="xxx@xxx.xxx" required autofocus name="email" value="{{ email }}">
+            <label>Email address (require)</label>
+            <input type="email" class="form-control" placeholder="xxx@xxx.xxx" required autofocus name="email"
+                   value="{{ email }}">
             <span style="color:red;">{{ error_list.email }}</span>
         </div>
 
         <div class="form-group">
-        <label>First name (require)</label>
-        <input type="text" class="form-control" placeholder="jhon" required name="first_name" value="{{ first_name }}">
+            <label>First name (require)</label>
+            <input type="text" class="form-control" placeholder="jhon" required name="first_name"
+                   value="{{ first_name }}">
             <span style="color:red;">{{ error_list.first_name }}</span>
         </div>
 
         <div class="form-group">
-        <label>Last name (require)</label>
-        <input type="text" class="form-control" placeholder="doe" required name="last_name" value="{{ last_name }}">
+            <label>Last name (require)</label>
+            <input type="text" class="form-control" placeholder="doe" required name="last_name" value="{{ last_name }}">
             <span style="color:red;">{{ error_list.last_name }}</span>
         </div>
 
@@ -41,6 +43,9 @@
     </form>
 
     <hr>
-    <div style="text-align:right"><small>Do you want to check the code? <a href="https://github.com/uzulla/slack-auto-invitation-form.php">github/uzulla/slack-auto-invitation-form.php</a></small></div>
+    <div style="text-align:right">
+        <small>Do you want to check the code? <a href="https://github.com/uzulla/slack-auto-invitation-form.php">github/uzulla/slack-auto-invitation-form.php</a>
+        </small>
+    </div>
 
 {% endblock %}
