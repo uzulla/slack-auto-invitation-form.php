@@ -26,15 +26,11 @@ $container['errorHandler'] = function ($container) {
 };
 
 $app->get('/', function (\Psr\Http\Message\ServerRequestInterface $request, $response, $args) {
-    $last_error = (isset($_SESSION['LAST_ERROR'])) ? $_SESSION['LAST_ERROR'] : '';
-    unset($_SESSION['LAST_ERROR']);
-
     $team_info = get_team_info();
 
     return $this->view->render($response, 'form.twig', [
         'csrf_name' => (string)$request->getAttribute('csrf_name'),
         'csrf_value' => (string)$request->getAttribute('csrf_value'),
-        'last_error' => (string)$last_error,
         'logo_url' => $team_info['icon_url'],
         'team_name' => $team_info['name']
     ]);

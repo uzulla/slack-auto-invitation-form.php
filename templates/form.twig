@@ -13,8 +13,6 @@
         <img src="{{ logo_url }}">
     </div>
 
-    <div style="color:red;">{{ last_error }}</div>
-
     <form class="form-signin" action="{{ path_for('submit') }}" method="post">
         <input type="hidden" name="csrf_name" value="{{ csrf_name }}">
         <input type="hidden" name="csrf_value" value="{{ csrf_value }}">
