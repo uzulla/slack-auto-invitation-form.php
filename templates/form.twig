@@ -20,21 +20,21 @@
         <h2 class="form-signin-heading">Please fill in</h2>
 
         <div class="form-group">
-            <label>Email address (require)</label>
+            <label>Email address (required)</label>
             <input type="email" class="form-control" placeholder="xxx@xxx.xxx" required autofocus name="email"
                    value="{{ email }}">
             <span style="color:red;">{{ error_list.email }}</span>
         </div>
 
         <div class="form-group">
-            <label>First name (require)</label>
+            <label>First name (required)</label>
             <input type="text" class="form-control" placeholder="jhon" required name="first_name"
                    value="{{ first_name }}">
             <span style="color:red;">{{ error_list.first_name }}</span>
         </div>
 
         <div class="form-group">
-            <label>Last name (require)</label>
+            <label>Last name (required)</label>
             <input type="text" class="form-control" placeholder="doe" required name="last_name" value="{{ last_name }}">
             <span style="color:red;">{{ error_list.last_name }}</span>
         </div>
