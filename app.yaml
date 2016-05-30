@@ -1,0 +1,9 @@
+application: PLZ_CHANGE
+module: PLZ_CHANGE
+
+runtime: php55
+api_version: 1
+
+handlers:
+- url: /.*
+  script: public/index.php
