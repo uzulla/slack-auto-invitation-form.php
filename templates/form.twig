@@ -13,7 +13,7 @@
         <img src="{{ logo_url }}">
     </div>
 
-    <form class="form-signin" action="{{ path_for('submit') }}" method="post">
+    <form class="form-signin" action="{{ path_for('submit', {'team_sub_domain':team_sub_domain }) }}" method="post">
         <input type="hidden" name="csrf_name" value="{{ csrf_name }}">
         <input type="hidden" name="csrf_value" value="{{ csrf_value }}">
 

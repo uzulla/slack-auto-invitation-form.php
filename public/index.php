@@ -7,7 +7,11 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 });
 
 require __DIR__ . "/../vendor/autoload.php";
-require __DIR__ . "/../config.php";
+if(strlen(getenv('SLACK_AUTO_INVITAION_SETTINGS_JSON'))>0) {
+    define('CONFIG_JSON', getenv('SLACK_AUTO_INVITAION_SETTINGS_JSON'));
+}else{
+    require __DIR__ . "/../config.php";
+}
 
 $app = new \Slim\App;
 
@@ -41,18 +45,22 @@ $container['errorHandler'] = function ($container) {
     };
 };
 
-$app->get('/', function (\Psr\Http\Message\ServerRequestInterface $request, $response, $args) {
-    $team_info = get_team_info();
+$app->get('/team/{team_sub_domain}', function (\Psr\Http\Message\ServerRequestInterface $request, $response, $args) {
+    $team_sub_domain = $request->getAttribute('team_sub_domain');
+    $team_info = get_team_info($team_sub_domain);
 
     return $this->view->render($response, 'form.twig', [
         'csrf_name' => (string)$request->getAttribute('csrf_name'),
         'csrf_value' => (string)$request->getAttribute('csrf_value'),
         'logo_url' => $team_info['icon_url'],
-        'team_name' => $team_info['name']
+        'team_name' => $team_info['name'],
+        'team_sub_domain' => $team_sub_domain
     ]);
 })->setName('form');
 
-$app->post('/submit', function (\Psr\Http\Message\ServerRequestInterface $request, $response, $args) {
+
+$app->post('/team/{team_sub_domain}/submit', function (\Psr\Http\Message\ServerRequestInterface $request, $response, $args) {
+    $team_sub_domain = $request->getAttribute('team_sub_domain');
 
     $email = (string)$request->getParsedBody()['email'];
     $first_name = (string)$request->getParsedBody()['first_name'];
@@ -74,7 +82,7 @@ $app->post('/submit', function (\Psr\Http\Message\ServerRequestInterface $reques
     }
 
     if (!empty($error_list)) {
-        $team_info = get_team_info();
+        $team_info = get_team_info($team_sub_domain);
 
         return $this->view->render($response, 'form.twig', [
             'csrf_name' => (string)$request->getAttribute('csrf_name'),
@@ -84,11 +92,12 @@ $app->post('/submit', function (\Psr\Http\Message\ServerRequestInterface $reques
             'last_name' => $last_name,
             'error_list' => $error_list,
             'logo_url' => $team_info['icon_url'],
-            'team_name' => $team_info['name']
+            'team_name' => $team_info['name'],
+            'team_sub_domain' => $team_sub_domain
         ]);
     }
 
-    request_invitation($email, $first_name, $last_name);
+    request_invitation($team_sub_domain, $email, $first_name, $last_name);
 
     return $response->withRedirect($this->router->pathFor('finish'));
 
@@ -102,9 +111,9 @@ $app->run();
 
 //========================
 
-function get_team_info()
+function get_team_info($team_sub_domain)
 {
-    $api_response = call_api('/api/team.info');
+    $api_response = call_api($team_sub_domain, '/api/team.info');
 
     if ($api_response->ok !== true) {
         error_log(print_r($api_response, 1));
@@ -117,10 +126,10 @@ function get_team_info()
     ];
 }
 
-function request_invitation($email, $first_name, $last_name)
+function request_invitation($team_sub_domain, $email, $first_name, $last_name)
 {
     // users.admin.invite is undocumented API, keep in mind.
-    $api_response = call_api('/api/users.admin.invite?t=' . time(), [
+    $api_response = call_api($team_sub_domain, '/api/users.admin.invite?t=' . time(), [
         'email' => $email,
         'first_name' => $first_name,
         'last_name' => $last_name,
@@ -133,14 +142,14 @@ function request_invitation($email, $first_name, $last_name)
     }
 }
 
-function call_api($path, $params = [])
+function call_api($team_sub_domain, $path, $params = [])
 {
     $client = new \GuzzleHttp\Client([
-        'base_uri' => sprintf("https://%s.slack.com/", TEAM_SUB_DOMAIN)
+        'base_uri' => sprintf("https://%s.slack.com/", $team_sub_domain)
     ]);
 
     $api_response_raw = $client->request('post', $path, [
-        'form_params' => array_merge(['token' => SLACK_API_TOKEN], $params)
+        'form_params' => array_merge(['token' => load_config($team_sub_domain)], $params)
     ]);
 
     $api_response = json_decode($api_response_raw->getBody());
@@ -150,4 +159,12 @@ function call_api($path, $params = [])
     }
 
     return $api_response;
+}
+
+function load_config($team_sub_domain){
+    $data = json_decode(CONFIG_JSON);
+    if(!array_key_exists($team_sub_domain, $data)){
+        throw new \Exception('invalid team sub domain');
+    }
+    return $data->$team_sub_domain;
 }
