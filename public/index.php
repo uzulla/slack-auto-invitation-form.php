@@ -7,9 +7,9 @@ set_error_handler(function ($errno, $errstr, $errfile, $errline) {
 });
 
 require __DIR__ . "/../vendor/autoload.php";
-if(strlen(getenv('SLACK_AUTO_INVITAION_SETTINGS_JSON'))>0) {
+if (strlen(getenv('SLACK_AUTO_INVITAION_SETTINGS_JSON')) > 0) {
     define('CONFIG_JSON', getenv('SLACK_AUTO_INVITAION_SETTINGS_JSON'));
-}else{
+} else {
     require __DIR__ . "/../config.php";
 }
 
@@ -161,9 +161,10 @@ function call_api($team_sub_domain, $path, $params = [])
     return $api_response;
 }
 
-function load_config($team_sub_domain){
+function load_config($team_sub_domain)
+{
     $data = json_decode(CONFIG_JSON, true);
-    if(!isset($data[$team_sub_domain])){
+    if (!isset($data[$team_sub_domain])) {
         throw new \Exception('invalid team sub domain');
     }
     return $data[$team_sub_domain];
