@@ -162,9 +162,9 @@ function call_api($team_sub_domain, $path, $params = [])
 }
 
 function load_config($team_sub_domain){
-    $data = json_decode(CONFIG_JSON);
-    if(!array_key_exists($team_sub_domain, $data)){
+    $data = json_decode(CONFIG_JSON, true);
+    if(!isset($data[$team_sub_domain])){
         throw new \Exception('invalid team sub domain');
     }
-    return $data->$team_sub_domain;
+    return $data[$team_sub_domain];
 }
