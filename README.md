@@ -35,3 +35,23 @@ $ /usr/local/bin/dev_appserver.py .
 $ /usr/local/bin/appcfg.py -V v1 update ./
 ```
 
+# deploy to heroku
+
+```
+$ cp config.docker.php config.php
+$ composer update
+$ git add -f config.php
+$ git add composer.lock
+$ git commit
+
+# create an app if you don't have
+$ heroku apps:create app-name
+$ heroku buildpacks:set heroku/php
+
+# set config vars
+$ heroku config:set TEAM_SUB_DOMAIN=fill_me
+$ heroku config:set SLACK_API_TOKEN=xoxp-fill_me
+
+# deploy
+$ git push heroku master
+```
